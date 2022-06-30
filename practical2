@@ -1,0 +1,66 @@
+use bmiit2022
+db.createCollection("Items")
+
+db.Items.insert({_id: "TP01", name: "Talcom Powder", manufacturer: "Persona", price: 40, qty: 45, stockdate: "11-02-18", dealer: "Krishna Cosmetik"})
+
+db.Items.insert({_id: "FW05", name: "Face Wash", manufacturer: "Attitude", price: 45, qty: 55, stockdate: "15-04-18", dealer: "Surbhi Collection"})
+db.Items.insert({_id: "BS01", name: "Bath Soap", manufacturer: "Persona", price: 55, qty: 80, stockdate: "11-02-18", dealer: "Krishna Cosmetik"})
+db.Items.insert({_id: "SH06", name: "Shampoo", manufacturer: "Patanjali", price: 12, qty: 50, stockdate: "05-01-17", dealer: "Surbhi Collection"})
+db.Items.insert({_id: "FW12", name: "Face Wash", manufacturer: "Loreal", price: 95, qty: 45, stockdate: "05-01-16", dealer: "Surbhi Collection"})
+db.Items.insert({_id: "S5005", name: "Ball Pen 0.5", manufacturer: "Nataraj Classic", price: 16, qty: 100, stockdate: "31-03-10", dealer: "Clear Deals"})
+db.Items.insert({_id: "S5003", name: "Ball Pen 0.25", manufacturer: "Nataraj Classic", price: 20, qty: 150, stockdate: "01-01-10", dealer: "Clear Deals"})
+db.Items.insert({_id: "S5002", name: "Gel Pen Premium", manufacturer: "Pilot Juice", price: 14, qty: 125, stockdate: "14-02-10", dealer: "Reliable Stationers"})
+db.Items.insert({_id: "S5006", name: "Gel Pen Classic", manufacturer: "Pilot Juice", price: 22, qty: 200, stockdate: "01-01-10", dealer: "Reliable Stationers"})
+db.Items.insert({_id: "S5001", name: "Eraser Small", manufacturer: "Apsara", price: 15, qty: 210, stockdate: "19-03-09", dealer: "Clear Deals"})
+db.Items.insert({_id: "S5004", name: "Eraser Big", manufacturer: "Apsara", price: 10, qty: 60, stockdate: "12-12-09", dealer: "Clear Deals"})
+db.Items.insert({_id: "S5009", name: "Sharper Classic", manufacturer: "Nataraj Classic", price: 18, qty: 160, stockdate: "23-01-09", dealer: "Classic Plastics"})
+
+1) db.Items.find({manufacturer: "Persona"}, {name:1, price:1, _id:0}).pretty()
+
+2) db.Items.distinct("manufacturer").length
+
+3) db.Items.find({name: {$regex: /^Sh.*$/}}).pretty()
+
+4) db.Items.find({name: {$regex: /^.*Pen.*$/}}).pretty()
+
+5) db.Items.find({price: {$gt: 80}},{name: 1, price: 1, qty: 1, _id: 0}).pretty()
+
+6) db.Items.find({price: {$lte: 80}}, {name: 1, price: 1, _id: 0}).pretty()
+
+7) db.Items.find({$or: [{_id: 102},{qty: {$gt:100}}]}).pretty()
+
+8) db.Items.find({$and: [{qty: {$gte: 50}},{qty: {$lte:100}}]}).pretty()
+
+9) db.Items.updateMany({},{$inc: {price: 10}})
+
+10) db.Items.updateMany({},{$inc: {qty: -30}})
+
+11) db.Items.updateMany({}, {$mul: {price: 1.15}})
+
+12) db.Items.aggregate([
+  {
+    "$group": {
+      "_id": null,
+      "maxval" : {"$max": "$price"},
+      "minval" : {"$min": "$price"}
+    }
+  }
+])
+
+13) db.Items.aggregate([
+  {
+    "$group": {
+      "_id": null,
+      "avgval" : {"$avg": "$price"},
+    }
+  }
+])
+
+14)db.Items.aggregate([
+  {
+    "$group": {
+      "_id": null,
+      "amount" : {$avg: {"$multiply": ["$price","$qty"]}}
+    }
+  }
+])
