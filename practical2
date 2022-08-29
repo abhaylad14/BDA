@@ -56,7 +56,7 @@ db.Items.insert({_id: "S5009", name: "Sharper Classic", manufacturer: "Nataraj C
   }
 ])
 
-14)db.Items.aggregate([
+14) db.Items.aggregate([
   {
     "$group": {
       "_id": null,
@@ -64,3 +64,69 @@ db.Items.insert({_id: "S5009", name: "Sharper Classic", manufacturer: "Nataraj C
     }
   }
 ])
+
+15) db.Items.aggregate(
+   [
+      { "$project": { 
+        "text": {$concat: ["$name", " price is ", { $toString: "$price"}]}
+         } }
+   ])
+
+16) db.Items.aggregate(
+   [
+      { "$project": { 
+        "text": {$concat: ["$name", " stock date is ", "$stockdate"]}
+         } }
+   ])
+
+17) 
+
+18) db.Items.find().sort({name:1}).pretty()
+
+19) db.Items.find().sort({stockdate:-1}).pretty()
+
+20) db.Items.find({dealer: {$nin: ["Reliable Stationers","Clear Deals","Krishna Cosmetik",]}}, {_id:0, manufacturer:1}).pretty()
+
+21) db.Items.aggregate(
+   [
+      { "$project": { 
+        "Name": {$toUpper: "$name"}
+         } }
+   ])
+
+22) db.Items.aggregate(
+   [
+      { "$project": { 
+        "Name": "$name",
+        "Length": {$strLenCP: "$name"}
+         } }
+   ])
+
+23) db.Items.aggregate(
+   [
+      { "$project": { 
+        "Manufacturer": {$toLower: "$manufacturer"}
+         } }
+   ])
+
+24) db.Items.distinct("dealer").length
+
+25) db.Items.aggregate(
+   [
+      { "$group": { 
+        _id: "$dealer",
+        Items: {$sum : 1}
+         } }
+   ])
+
+26) db.Items.aggregate(
+   [
+      { "$group": { 
+        _id: "$dealer",
+        MaxPrice: {$max : "$price"}
+         } }
+   ])
+
+27) 
+
+28) 
