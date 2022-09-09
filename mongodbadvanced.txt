@@ -1,0 +1,104 @@
+mongoimport --db newdb --collection mydata --type=csv --headerline --file=<filename>.csv =>to import csvfile
+mongoimport --jsonArray --db newdb --collection mydata --file=<filename>.json => to import jsonfile
+
+mongoexport --db newdb --collection mydata --type=csv --out output.csv --fields <column1,column2> => to export csv
+mongoexport --db newdb --collection newcollection --type=json --out output.json => to export JSON file
+
+=====================================================================================================================
+
+MapReduce:
+var mapfunction = function(){emit(this.userId, this.marks)}
+var reducefunction = function(key,values){ return Array.sum(values)}
+db.newcollection.mapReduce(mapfunction,reducefunction, {out: 'res1'})
+db.res1.find().pretty()
+
+=====================================================================================================================
+
+ArrayOps
+db.data.insert({_id:1, name:"abc", food:["pizza, burger, pasta"]})
+
+find with a single element:===============================================
+db.data.find({food: "pizza"})
+
+find with multiple elements:==============================================
+db.data.find({food: {$all: ["pizza","pasta"]}})
+
+get array of given size: return the document having array size of 3============
+db.data.find({food:{$size:3}})
+
+find element with index: ====================================================
+db.data.find({"food.0": "pizza"})
+
+cut array by specific size
+db.data.find({}, {food:{$slice:2}})
+
+Add an element in array:====================================================
+db.data.update({_id:1},{$push:{food:"fries"}})
+
+Add multiple elements in array:
+db.data.update({_id:1},{$push:{food:{$each: ["cake","pastry"]}}})
+
+condition with array: find and match specific condition=====================
+db.scores.find(
+   { results: { $elemMatch: { $gte: 80, $lt: 85 } } }
+)
+db.survey.find(
+   { results: { $elemMatch: { product: "xyz", score: { $gte: 8 } } } }
+)
+db.survey.find(
+   { results: { $elemMatch: { product: "xyz" } } }
+)
+
+remove first element from array ===========================================
+db.students.updateOne( { _id: 1 }, { $pop: { scores: -1 } } )
+
+remove last element from array ===========================================
+db.students.updateOne( { _id: 10 }, { $pop: { scores: 1 } } )
+
+remove an element in array:==================================================
+db.demo541.update({ _id: ObjectId("5e8ca845ef4dcbee04fbbc11") },{ $pull: { 'software.services': "yahoo" }}
+
+insert at specific position: ==============================================
+db.students.updateOne(
+   { _id: 2 },
+   {
+     $push: {
+        scores: {
+           $each: [ 20, 30 ], 
+           $position: 2
+        }
+     }
+   }
+)
+
+remove element from specific index: =======================================
+db.yourCollectionName.update({},{$unset:{"yourArrayListName.yourPosition":yourPositionValue}};
+db.yourCollectionName.update({},{$pull:{"yourArrayListName":null}});
+eg:
+db.removeArrayElements.update({},{$unset:{"TechnicalSubject.3":1}});
+db.removeArrayElements.update({},{$pull:{"TechnicalSubject":null}});
+
+find and update element at any position ==================================
+db.students.updateOne(
+   { _id: 1, grades: 80 },
+   { $set: { "grades.$" : 82 } }
+)
+
+find and update element at given position ==================================
+db.students.updateOne(
+   { _id: 1 },
+   { $set: { "grades.1" : 82 } }
+)
+
+sort an array =============================================================
+db.engineers.aggregate( [
+   { $project:
+      {
+          _id: 0,
+          result:
+            {
+               $sortArray: { input: "$team", sortBy: { name: 1 } }
+            }
+      }
+   }
+] )
