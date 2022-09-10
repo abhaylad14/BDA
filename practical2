@@ -127,6 +127,13 @@ db.Items.insert({_id: "S5009", name: "Sharper Classic", manufacturer: "Nataraj C
          } }
    ])
 
-27) 
+27) db.Items.aggregate(
+   [
+      { "$group": { 
+        _id: "$manufacturer",
+        MaxPrice: {$min : "$price"}
+         } }
+   ])
 
-28) 
+
+28) db.Items.remove({})
